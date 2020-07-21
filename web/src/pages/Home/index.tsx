@@ -1,0 +1,28 @@
+import React from "react";
+import "./style.css";
+import logo from "../../assets/logo.svg";
+
+import { FiLogIn } from "react-icons/fi";
+
+const Home = () => {
+  return (
+    <div id="page-home">
+      <div className="content">
+        <header>
+          <img src={logo} alt="Ecoleta" />
+        </header>
+
+        <main>
+          <h1>Your marketplace for waste collection</h1>
+          <p>We help people find collection points efficiently</p>
+          <a href="/register">
+            <span><FiLogIn /></span>
+            <strong>Register a collection point</strong>
+          </a>
+        </main>
+      </div>
+    </div>
+  );
+};
+
+export default Home;
