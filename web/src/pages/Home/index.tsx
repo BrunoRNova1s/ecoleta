@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from 'react-router-dom'
 import "./style.css";
 import logo from "../../assets/logo.svg";
 
@@ -15,10 +16,10 @@ const Home = () => {
         <main>
           <h1>Your marketplace for waste collection</h1>
           <p>We help people find collection points efficiently</p>
-          <a href="/register">
+          <Link to="/create-point">
             <span><FiLogIn /></span>
             <strong>Register a collection point</strong>
-          </a>
+          </Link>
         </main>
       </div>
     </div>
