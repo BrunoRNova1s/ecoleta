@@ -28,6 +28,8 @@ const CreatePoint = () => {
   const [items, setItems] = useState<Item[]>([]);
   const [ufs, setUfs] = useState<string[]>([]);
   const [selectedUf, setSelectedUf] = useState("0");
+  const [cities, setCities] = useState<string[]>([]);
+  const [selectedCity, setselectedCity] = useState("0");
 
   useEffect(() => {
     api.get("items").then((response) => {
@@ -47,21 +49,30 @@ const CreatePoint = () => {
   }, []);
 
   useEffect(() => {
-    if( selectedUf === '0') {
-      return
+    if (selectedUf === "0") {
+      return;
     }
 
     axios
       .get<IBGECityResponse[]>(
         `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedUf}/municipios`
       )
-      .then((response) => {});
+      .then((response) => {
+        const cityName = response.data.map((city) => city.nome);
+        setCities(cityName);
+      });
   }, [selectedUf]);
 
   function handleSelectedUf(event: ChangeEvent<HTMLSelectElement>) {
     const uf = event.target.value;
 
     setSelectedUf(uf);
+  }
+
+  function handleSelectedCity(event: ChangeEvent<HTMLSelectElement>) {
+    const city = event.target.value;
+
+    setselectedCity(city);
   }
 
   return (
@@ -128,8 +139,18 @@ const CreatePoint = () => {
             </div>
             <div className="field">
               <label htmlFor="city">City</label>
-              <select name="city" id="city">
+              <select
+                name="city"
+                id="city"
+                onChange={handleSelectedCity}
+                value={selectedCity}
+              >
                 <option value="0">Select a City</option>
+                {cities.map((city) => (
+                  <option key={city} value={city}>
+                    {city}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
