@@ -6,6 +6,7 @@ import "./style.css";
 import logo from "../../assets/logo.svg";
 
 import { Map, TileLayer, Marker } from "react-leaflet";
+import { LeafletMouseEvent } from 'leaflet';
 
 import axios from "axios";
 import api from "../../services/api";
@@ -30,6 +31,8 @@ const CreatePoint = () => {
   const [selectedUf, setSelectedUf] = useState("0");
   const [cities, setCities] = useState<string[]>([]);
   const [selectedCity, setselectedCity] = useState("0");
+  const [initialPosition, setInitialPosition] = useState<[number, number]>([0, 0])
+  const [selectedPosition, setSelectedPosition] = useState<[number, number]>([0, 0])
 
   useEffect(() => {
     api.get("items").then((response) => {
@@ -63,6 +66,14 @@ const CreatePoint = () => {
       });
   }, [selectedUf]);
 
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(position => {
+      const { latitude, longitude } = position.coords
+      
+      setInitialPosition([latitude, longitude])
+    })
+  }, [])
+
   function handleSelectedUf(event: ChangeEvent<HTMLSelectElement>) {
     const uf = event.target.value;
 
@@ -73,6 +84,13 @@ const CreatePoint = () => {
     const city = event.target.value;
 
     setselectedCity(city);
+  }
+
+  function handleMapClick(event: LeafletMouseEvent) {
+    setSelectedPosition([
+      event.latlng.lat,
+      event.latlng.lng
+    ])
   }
 
   return (
@@ -112,12 +130,12 @@ const CreatePoint = () => {
             <span>Select the address on the map</span>
           </legend>
 
-          <Map center={[41.1601201, -8.1972603]} zoom={15}>
+          <Map center={initialPosition} zoom={15} onClick={handleMapClick}>
             <TileLayer
               attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            <Marker position={[41.1601201, -8.1972603]} />
+            <Marker position={selectedPosition} />
           </Map>
 
           <div className="field-group">
