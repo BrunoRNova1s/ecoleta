@@ -1,5 +1,5 @@
-import React, { useEffect, useState, ChangeEvent } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState, ChangeEvent, FormEvent } from "react";
+import { Link, useHistory } from "react-router-dom";
 
 import { FiArrowLeft } from "react-icons/fi";
 import "./style.css";
@@ -45,6 +45,8 @@ const CreatePoint = () => {
     whatsapp: "",
   });
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
+
+  const history = useHistory()
 
   useEffect(() => {
     api.get("items").then((response) => {
@@ -109,7 +111,42 @@ const CreatePoint = () => {
   }
 
   function handleSelectItem(id: number) {
-    setSelectedItems({id})
+    const alreadySelected = selectedItems.findIndex(item => item === id)
+
+    if (alreadySelected >= 0) {
+      const filteredItems = selectedItems.filter(item => item !== id)
+
+      setSelectedItems(filteredItems)
+    } else {
+      setSelectedItems([...selectedItems, id])
+    }
+  }
+
+  async function handleSubmit(event: FormEvent) {
+    event.preventDefault();
+    
+    const {name, email, whatsapp} = formData;
+    const uf = selectedUf;
+    const city = selectedCity;
+    const [latitude, longitude] = selectedPosition;
+    const items = selectedItems;
+
+    const data = {
+      name,
+      email,
+      whatsapp,
+      uf,
+      city,
+      latitude,
+      longitude,
+      items
+    }
+
+    await api.post('points', data)
+
+    alert('Done')
+
+    history.push('/')
   }
 
   return (
@@ -122,7 +159,7 @@ const CreatePoint = () => {
         </Link>
       </header>
 
-      <form>
+      <form onSubmit={handleSubmit}>
         <h1>Register a colect point</h1>
         <fieldset>
           <legend>
