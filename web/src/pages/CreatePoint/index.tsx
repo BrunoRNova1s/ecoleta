@@ -4,6 +4,7 @@ import { Link, useHistory } from "react-router-dom";
 import { FiArrowLeft } from "react-icons/fi";
 import "./style.css";
 import logo from "../../assets/logo.svg";
+import DropZone from "../../components/DropZone";
 
 import { Map, TileLayer, Marker } from "react-leaflet";
 import { LeafletMouseEvent } from "leaflet";
@@ -46,7 +47,7 @@ const CreatePoint = () => {
   });
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
 
-  const history = useHistory()
+  const history = useHistory();
 
   useEffect(() => {
     api.get("items").then((response) => {
@@ -111,21 +112,21 @@ const CreatePoint = () => {
   }
 
   function handleSelectItem(id: number) {
-    const alreadySelected = selectedItems.findIndex(item => item === id)
+    const alreadySelected = selectedItems.findIndex((item) => item === id);
 
     if (alreadySelected >= 0) {
-      const filteredItems = selectedItems.filter(item => item !== id)
+      const filteredItems = selectedItems.filter((item) => item !== id);
 
-      setSelectedItems(filteredItems)
+      setSelectedItems(filteredItems);
     } else {
-      setSelectedItems([...selectedItems, id])
+      setSelectedItems([...selectedItems, id]);
     }
   }
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    
-    const {name, email, whatsapp} = formData;
+
+    const { name, email, whatsapp } = formData;
     const uf = selectedUf;
     const city = selectedCity;
     const [latitude, longitude] = selectedPosition;
@@ -139,14 +140,14 @@ const CreatePoint = () => {
       city,
       latitude,
       longitude,
-      items
-    }
+      items,
+    };
 
-    await api.post('points', data)
+    await api.post("points", data);
 
-    alert('Done')
+    alert("Done");
 
-    history.push('/')
+    history.push("/");
   }
 
   return (
@@ -161,6 +162,9 @@ const CreatePoint = () => {
 
       <form onSubmit={handleSubmit}>
         <h1>Register a colect point</h1>
+
+        <DropZone />
+
         <fieldset>
           <legend>
             <h2>Data</h2>
